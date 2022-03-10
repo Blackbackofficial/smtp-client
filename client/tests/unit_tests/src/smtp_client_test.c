@@ -40,7 +40,7 @@ int init_suite(void)
     mock_dscrptrs[0].mails_list->next = NULL;
     mock_dscrptrs[0].state = CLIENT_FSM_ST_CONNECT;
 
-    add_first(&mock_dscrptrs[0].mails_list, "/home/ivachernov/pvs-course-project/smtp_proj/client/tests/system_tests/mail/user1/new/1.2.localhost.com,S=41.mbox");
+    add_first(&mock_dscrptrs[0].mails_list, "/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.2.localhost.com,S=41.mbox");
     return 0;
 }
 
@@ -48,7 +48,7 @@ int clean_suite(void) { return 0; }
 
 void EMAIL_FILE_READ_SUCCESS(void)
 {
-    char *mail_path = "/home/ivachernov/pvs-course-project/smtp_proj/client/tests/system_tests/mail/user1/new/1.3.localhost.com,S=41.mbox";
+    char *mail_path = "/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.3.localhost.com,S=41.mbox";
     FILE *fp = fopen(mail_path, "a+");
     const char *text = "Write this to the file";
     fprintf(fp, "Some text: %s\n", text);
@@ -60,7 +60,7 @@ void EMAIL_FILE_READ_SUCCESS(void)
 
 void EMAIL_FILE_READ_FAILED(void)
 {
-    char *read_msg = read_msg_file("/home/ivachernov/pvs-course-project/smtp_proj/client/tests/system_tests/mail/user1/new/1.4.localhost.com,S=41.mbox");
+    char *read_msg = read_msg_file("/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.4.localhost.com,S=41.mbox");
     CU_ASSERT_EQUAL(read_msg, NULL);
 }
 

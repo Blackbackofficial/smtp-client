@@ -18,7 +18,7 @@
 
 int main(void)
 {
-    char *mail_path = "/home/ivachernov/pvs-course-project/smtp_proj/client/tests/system_tests/mail/user1/new/1.1.localhost.com,S=41.mbox";
+    char *mail_path = "/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.1.localhost.com,S=41.mbox";
     FILE *fp = fopen(mail_path, "a+");
     if (fp != NULL)
     {
