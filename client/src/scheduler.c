@@ -2,38 +2,33 @@
 
 int maxfd = 0;
 
-int run_client(int proc_num, int total_send_time, int retry_time)
-{
+int run_client(int proc_num, int total_send_time, int retry_time) {
     //int fork_res = -1;
     int child_id = -1;
     struct mail_process_dscrptr mail_procs[proc_num];
-    for (pid_t i = 0; i < proc_num; i++)
-    {
+    for (pid_t i = 0; i < proc_num; i++) {
         mail_procs[i].pid = fork();
-        if (mail_procs[i].pid == 0)
-        {
+        if (mail_procs[i].pid == 0) {
             child_id = i;
             break;
-        }
-        else if (mail_procs[i].pid == -1)
+        } else if (mail_procs[i].pid == -1) {
             log_e("%s", "Can't fork worker process\n");
+        }
     }
 
-    if (child_id != -1)
+    if (child_id != -1) {
         child_process_worker_start(child_id, total_send_time, retry_time);
-    else
+    } else {
         master_process_worker_start(proc_num, mail_procs);
-
+    }
     return 1;
 }
 
 // Содержит бизнес логику, обрабатываемую главным процессом
-int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_procs)
-{
+int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_procs) {
     log_i("%s", "Worker for master proc successfully started");
     //struct mail_process_dscrptr mail_procs[proc_num];
-    for (int i = 0; i < proc_num; i++)
-    {
+    for (int i = 0; i < proc_num; i++) {
         key_t key = ftok("/tmp", i);
         mail_procs[i].msg_queue_id = msgget(key, 0666 | IPC_CREAT);
         mail_procs[i].domains_count = 0;
@@ -41,14 +36,11 @@ int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_
 
     struct domain_mails domains_mails[MAX_MAIL_DOMAIN_NUM * 2];
     int domains_count = 0;
-    while (1)
-    {
+    for(;;) {
         domains_count = get_domains_mails(domains_mails, domains_count);
-        for (int i = 0; i < domains_count; i++)
-        {
+        for (int i = 0; i < domains_count; i++) {
             int domain_proc_idx = get_mail_proc_idx(domains_mails[i].domain, domains_count, mail_procs, proc_num);
-            for (int j = 0; j < domains_mails[i].mails_count; j++)
-            {
+            for (int j = 0; j < domains_mails[i].mails_count; j++) {
                 struct queue_msg new_msg;
                 new_msg.mtype = 1;
                 strcpy(new_msg.mtext, domains_mails[i].mails_paths[j]);
@@ -67,15 +59,11 @@ int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_
 }
 
 // Возвращает индекс процесса, в который стоит отправить новое письмо на обработку
-int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_dscrptr *mail_procs, int proc_num)
-{
-    for (int j = 0; j < proc_num; j++)
-    {
-        for (int i = 0; i < mail_procs[j].domains_count; i++)
-        {
+int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_dscrptr *mail_procs, int proc_num) {
+    for (int j = 0; j < proc_num; j++) {
+        for (int i = 0; i < mail_procs[j].domains_count; i++) {
             // Если один из процессов уже занимается обработкой конкр.домена, скидываем письмо в него
-            if (strcmp(domain_name, mail_procs[j].domains[i]) == 0)
-            {
+            if (strcmp(domain_name, mail_procs[j].domains[i]) == 0) {
                 log_i("Process %d already handles %s domain. Domains count %d", j, domain_name, mail_procs[j].domains_count);
                 return j;
             }
@@ -84,8 +72,7 @@ int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_
 
     // Домен не найден ни в одном из процессов. Скидываем в процесс с меньшим числом доменов
     int min_proc_idx = 0;
-    for (int j = 1; j < proc_num; j++)
-    {
+    for (int j = 1; j < proc_num; j++) {
         if (mail_procs[min_proc_idx].domains_count > mail_procs[j].domains_count)
             min_proc_idx = j;
     }
@@ -98,8 +85,8 @@ int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_
 }
 
 // Содержит бизнес логику, обрабатываемую дочерним процессом
-int child_process_worker_start(int proc_idx, int total_send_time, int retry_time)
-{printf("Fork-Test\n");
+int child_process_worker_start(int proc_idx, int total_send_time, int retry_time) {
+    printf("Fork-Test\n");
     log_i("Worker for child proc `%d' successfully started.", getpid());
     struct mail_domain_dscrptr mail_domains_dscrptrs[50];
     log_e("Worker for child proc `%d' successfully started.", getpid());
@@ -118,51 +105,48 @@ int child_process_worker_start(int proc_idx, int total_send_time, int retry_time
     struct queue_msg cur_msg;
 
     struct timeval tv;
-    while (1)
-    {
-        if (msgrcv(cur_proc_mq_id, &cur_msg, sizeof(cur_msg), 1, IPC_NOWAIT) != -1)
-        {
-            if (strlen(cur_msg.mtext) != 0)
+    while (1) {
+        if (msgrcv(cur_proc_mq_id, &cur_msg, sizeof(cur_msg), 1, IPC_NOWAIT) != -1) {
+            if (strlen(cur_msg.mtext) != 0) {
                 ready_domains_count = register_new_email(cur_msg.mtext, mail_domains_dscrptrs,
-                                                         &read_fds, &write_fds, &except_fds, total_send_time, retry_time, ready_domains_count);
+                                                         &read_fds, &write_fds, &except_fds, total_send_time,
+                                                         retry_time, ready_domains_count);
+            }
         }
 
-        for (int i = 0; i < ready_domains_count; i++)
-        {
+        for (int i = 0; i < ready_domains_count; i++) {
             struct mail_domain_dscrptr *cur_domain = &mail_domains_dscrptrs[i];
-            if (cur_domain->socket_fd > maxfd)
+            if (cur_domain->socket_fd > maxfd) {
                 maxfd = cur_domain->socket_fd;
+            }
         }
 
         tv.tv_sec = 15;
         tv.tv_usec = 0;
         int activity = select(maxfd + 1, &read_fds, &write_fds, &except_fds, &tv);
-        if (activity <= 0)
-        {
+        if (activity <= 0) {
             //log_e(" error %d", errno);
             //shutdown_properly(EXIT_FAILURE);
         }
 
-        for (int i = 0; i < maxfd + 1; i++)
-        {
+        for (int i = 0; i < maxfd + 1; i++) {
             struct mail_domain_dscrptr *cur_mail_domain;
-            for (int j = 0; j < ready_domains_count; j++)
-            {
-                if (mail_domains_dscrptrs[j].socket_fd == i)
-                {
+            for (int j = 0; j < ready_domains_count; j++) {
+                if (mail_domains_dscrptrs[j].socket_fd == i) {
                     cur_mail_domain = &mail_domains_dscrptrs[j];
                     break;
                 }
             }
 
-            if (FD_ISSET(i, &read_fds))
+            if (FD_ISSET(i, &read_fds)) {
                 handle_read_socket(cur_mail_domain, &read_fds, &write_fds);
+            }
 
-            if (FD_ISSET(i, &write_fds))
+            if (FD_ISSET(i, &write_fds)) {
                 handle_write_socket(cur_mail_domain, &read_fds, &write_fds);
+            }
 
-            if (FD_ISSET(i, &except_fds))
-            {
+            if (FD_ISSET(i, &except_fds)) {
                 log_i("Socket %d of %s domain is in except_fds", cur_mail_domain->socket_fd, cur_mail_domain->domain);
                 //shutdown_properly(EXIT_FAILURE);
             }
@@ -173,26 +157,22 @@ int child_process_worker_start(int proc_idx, int total_send_time, int retry_time
 }
 
 // Ожидает заданное число секунд
-void wait_for(unsigned int secs)
-{
+void wait_for(unsigned int secs) {
     unsigned int retTime = time(0) + secs;
-    while (time(0) < retTime)
-        ; // Loop until it arrives.
+    while (time(0) < retTime); // Loop until it arrives.
 }
 
-void shutdown_master_properly(int proc_num, struct mail_process_dscrptr *mail_procs)
-{
-    for (int i = 0; i < proc_num; i++)
+void shutdown_master_properly(int proc_num, struct mail_process_dscrptr *mail_procs) {
+    for (int i = 0; i < proc_num; i++) {
         kill(mail_procs[i].pid, SIGINT);
+    }
 
     printf("Shutdown client properly.\n");
     exit(0);
 }
 
-void shutdown_child_properly(int signal, int maxfd)
-{
-    switch (signal)
-    {
+void shutdown_child_properly(int signal, int maxfd) {
+    switch (signal) {
     case SIGINT:
         close_all_conns(maxfd);
         exit(0);

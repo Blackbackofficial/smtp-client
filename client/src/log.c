@@ -9,8 +9,7 @@
 
 log_level cur_lvl;
 
-int save_log(char *message, char *logs_dir)
-{
+int save_log(char *message, char *logs_dir) {
     struct tm *timenow;
 
     time_t now = time(NULL);
@@ -33,8 +32,7 @@ int save_log(char *message, char *logs_dir)
     else
         fp = fopen(log_path, "a+");
 
-    if (fp != NULL)
-    {
+    if (fp != NULL) {
         char *full_log_msg = malloc(strlen(timeString) + 2 + strlen(message));
         strcpy(full_log_msg, timeString);
         strcat(full_log_msg, " ");
@@ -47,14 +45,12 @@ int save_log(char *message, char *logs_dir)
     return 1;
 }
 
-int start_logger(char *log_filename_base)
-{
+int start_logger(char *log_filename_base) {
     printf("Log path : %s \n", log_filename_base);
     key_t key = ftok("/tmp", 33);
     int log_queue_id = msgget(key, 0644);
     struct queue_msg cur_msg;
-    while (1)
-    {
+    for(;;) {
         if (msgrcv(log_queue_id, &cur_msg, sizeof(cur_msg), 1, IPC_NOWAIT) != -1)
         {
             if (strlen(cur_msg.mtext) != 0)
@@ -62,12 +58,6 @@ int start_logger(char *log_filename_base)
         }
     }
     return 0;
-}
-
-int stop_logger(void)
-{
-    int result = 0;
-    return result;
 }
 
 int send_log_message(log_level log_lvl, char *message)

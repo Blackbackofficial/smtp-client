@@ -10,8 +10,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-struct client_conf
-{
+struct client_conf {
 	int proc_cnt;
     int retry_time;
     int total_send_time;

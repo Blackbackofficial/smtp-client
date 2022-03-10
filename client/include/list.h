@@ -9,8 +9,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-typedef struct node_t
-{
+typedef struct node_t {
     char *val;
     struct node_t *next;
 } node_t;
