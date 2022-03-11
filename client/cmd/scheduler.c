@@ -3,7 +3,6 @@
 int maxfd = 0;
 
 int run_client(int proc_num, int total_send_time, int retry_time) {
-    //int fork_res = -1;
     int child_id = -1;
     struct mail_process_dscrptr mail_procs[proc_num];
     for (pid_t i = 0; i < proc_num; i++) {
@@ -27,9 +26,8 @@ int run_client(int proc_num, int total_send_time, int retry_time) {
 // Содержит бизнес логику, обрабатываемую главным процессом
 int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_procs) {
     log_i("%s", "Worker for master proc successfully started");
-    //struct mail_process_dscrptr mail_procs[proc_num];
     for (int i = 0; i < proc_num; i++) {
-        key_t key = ftok("/tmp", i);
+        key_t key = ftok("/home/ivachernov/smtp-client/client", i);
         mail_procs[i].msg_queue_id = msgget(key, 0666 | IPC_CREAT);
         mail_procs[i].domains_count = 0;
     }
@@ -100,7 +98,7 @@ int child_process_worker_start(int proc_idx, int total_send_time, int retry_time
     FD_ZERO(&write_fds);
     FD_ZERO(&except_fds);
 
-    key_t key = ftok("/tmp", proc_idx);
+    key_t key = ftok("/home/ivachernov/smtp-client/client", proc_idx);
     int cur_proc_mq_id = msgget(key, 0666);
     struct queue_msg cur_msg;
 
@@ -125,8 +123,7 @@ int child_process_worker_start(int proc_idx, int total_send_time, int retry_time
         tv.tv_usec = 0;
         int activity = select(maxfd + 1, &read_fds, &write_fds, &except_fds, &tv);
         if (activity <= 0) {
-            //log_e(" error %d", errno);
-            //shutdown_properly(EXIT_FAILURE);
+            log_e(" error in descript select %d", errno);
         }
 
         for (int i = 0; i < maxfd + 1; i++) {
@@ -148,33 +145,13 @@ int child_process_worker_start(int proc_idx, int total_send_time, int retry_time
 
             if (FD_ISSET(i, &except_fds)) {
                 log_i("Socket %d of %s domain is in except_fds", cur_mail_domain->socket_fd, cur_mail_domain->domain);
-                //shutdown_properly(EXIT_FAILURE);
             }
         }
     }
-
-    return 1;
 }
 
 // Ожидает заданное число секунд
 void wait_for(unsigned int secs) {
     unsigned int retTime = time(0) + secs;
     while (time(0) < retTime); // Loop until it arrives.
-}
-
-void shutdown_master_properly(int proc_num, struct mail_process_dscrptr *mail_procs) {
-    for (int i = 0; i < proc_num; i++) {
-        kill(mail_procs[i].pid, SIGINT);
-    }
-
-    printf("Shutdown client properly.\n");
-    exit(0);
-}
-
-void shutdown_child_properly(int signal, int maxfd) {
-    switch (signal) {
-    case SIGINT:
-        close_all_conns(maxfd);
-        exit(0);
-    }
 }
