@@ -48,17 +48,17 @@ def MAIL(args, s, client_address, state):
         # make sure it's not a nested mail command
         if not state['MAIL']:
             # check if the arguments are provided
-            if len(args) != 2:
+            arList = list()
+            for arg in args:
+                arList.append(arg.decode('UTF-8'))
+            if len(args) != 3:
                 s.send(bytes("501 5.5.4 Syntax: MAIL FROM:<address> \r\n", "utf-8"))
                 return
-            checkSyntax = re.match("(^FROM:<[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", args[1], re.IGNORECASE)
+            checkSyntax = re.match("(^FROM: <[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", arList[1]+" "+arList[2], re.IGNORECASE)
             if checkSyntax:
-                arList = list()
                 # check if this is the first mail transaction in this session
                 if not state['data']:
                     with open(fileName, 'a') as the_file:
-                        for arg in args:
-                            arList.append(arg.decode('UTF-8'))
                         the_file.write(" ".join(arList) + "\r\n")
                     state['MAIL'] = True
                     s.send(bytes("250 2.1.0 Ok \r\n", "utf-8"))
@@ -86,7 +86,7 @@ def RCPT(args, s, client_address, state):
             s.send(bytes("501 5.5.4 Syntax: RCPT TO:<address> \r\n", "utf-8"))
             return
         # check the format of the email is valid
-        checkSyntax = re.match("(^TO:<[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", args[1], re.IGNORECASE)
+        checkSyntax = re.match("(^TO:<[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", args[1].decode("utf-8"), re.IGNORECASE)
         if checkSyntax:
             state['recipient'] = checkSyntax.group()
             fileName = str(state['file']) + '.txt'

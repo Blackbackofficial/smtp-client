@@ -209,7 +209,6 @@ te_client_fsm_event check_server_code(char *response) {
     log_i("SERVER RESPONSE %s", response);
     char server_returned_code[4] = "   ";
     memcpy(server_returned_code, response, strlen(server_returned_code));
-    printf("hi");
     int code = atoi(server_returned_code);
     if (code < 200 || (code > 300 && code != 354)) {
         char error_msg[1024];

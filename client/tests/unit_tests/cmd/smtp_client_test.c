@@ -10,8 +10,7 @@ fd_set except_fds;
 struct mail_domain_dscrptr mock_dscrptrs[1];
 
 /* Test Suite setup and cleanup functions: */
-int init_suite(void)
-{
+int init_suite(void) {
     FD_ZERO(&read_fds);
     FD_ZERO(&write_fds);
     FD_ZERO(&except_fds);
@@ -27,15 +26,14 @@ int init_suite(void)
     mock_dscrptrs[0].mails_list->next = NULL;
     mock_dscrptrs[0].state = CLIENT_FSM_ST_CONNECT;
 
-    add_first(&mock_dscrptrs[0].mails_list, "/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.2.localhost.com,S=41.mbox");
+    add_first(&mock_dscrptrs[0].mails_list, "/home/ivachernov/smtp-client/utils/mail/ubuntu/new/1.1.localhost.com,S=41.mbox");
     return 0;
 }
 
 int clean_suite(void) { return 0; }
 
-void EMAIL_FILE_READ_SUCCESS(void)
-{
-    char *mail_path = "/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.3.localhost.com,S=41.mbox";
+void EMAIL_FILE_READ_SUCCESS(void) {
+    char *mail_path = "/home/ivachernov/smtp-client/client/tests/system_tests/mail/ubuntu/new/1.3.localhost.com,S=41.mbox";
     FILE *fp = fopen(mail_path, "a+");
     const char *text = "Write this to the file";
     fprintf(fp, "Some text: %s\n", text);
@@ -45,38 +43,33 @@ void EMAIL_FILE_READ_SUCCESS(void)
     remove(mail_path);
 }
 
-void EMAIL_FILE_READ_FAILED(void)
-{
+void EMAIL_FILE_READ_FAILED(void) {
     char *read_msg = read_msg_file("/home/ivachernov/smtp-client/client/tests/system_tests/mail/user1/new/1.4.localhost.com,S=41.mbox");
     CU_ASSERT_EQUAL(read_msg, NULL);
 }
 
 void DOMAIN_SERVER_INFO_GOT_SUCCESS(void)
 {
-    struct sockaddr_in mail_server = get_domain_server_info("gmail.com");
+    struct sockaddr_in mail_server = get_domain_server_info("yandex.ru");
     CU_ASSERT_EQUAL(mail_server.sin_port, htons(25));
 }
 
-void DOMAIN_SERVER_INFO_GOT_FAILED(void)
-{
+void DOMAIN_SERVER_INFO_GOT_FAILED(void) {
     struct sockaddr_in mail_server = get_domain_server_info("dsdsdsdsds.net");
     CU_ASSERT_EQUAL(mail_server.sin_port, htons(0));
 }
 
-void GMAIL_MX_SERVER_NAME_GOT_SUCCESS(void)
-{
+void GMAIL_MX_SERVER_NAME_GOT_SUCCESS(void) {
     char *server_name = get_domain_mx_server_name("gmail.com");
     CU_ASSERT_NOT_EQUAL(server_name, NULL);
 }
 
-void LOCALHOST_MX_SERVER_NAME_GOT_SUCCESS(void)
-{
+void LOCALHOST_MX_SERVER_NAME_GOT_SUCCESS(void) {
     char *server_name = get_domain_mx_server_name("localhost.com");
     CU_ASSERT_STRING_EQUAL(server_name, "localhost");
 }
 
-void FAKE_MX_SERVER_NAME_GOT_FAILED(void)
-{
+void FAKE_MX_SERVER_NAME_GOT_FAILED(void) {
     char *server_name = get_domain_mx_server_name("noname.com");
     CU_ASSERT_EQUAL(server_name, NULL);
 }
@@ -111,6 +104,7 @@ void ONE_EMAIL_SENT_SUCCESS(void) {
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
     mock_dscrptrs[0].buffer = read_msg_file(mock_dscrptrs[0].mails_list->val);
+//    printf("%s", mock_dscrptrs[0].buffer);
     send_mail_from(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
     for(;;) {
         server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
@@ -120,6 +114,7 @@ void ONE_EMAIL_SENT_SUCCESS(void) {
             break;
         }
     }
+    printf("%s", server_response);
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
@@ -132,6 +127,7 @@ void ONE_EMAIL_SENT_SUCCESS(void) {
             break;
         }
     }
+    printf("%s", server_response);
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
@@ -144,6 +140,7 @@ void ONE_EMAIL_SENT_SUCCESS(void) {
             break;
         }
     }
+    event = check_server_code(server_response);
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
@@ -358,14 +355,12 @@ void TWO_EMAILS_TWO_SESSIONS_SENT_SUCCESS(void)
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 }
 
-int main(void)
-{
-    char *mail_path = "/home/ivachernov/smtp-client/common/mail/ubuntu/new/1.1.localhost.com,S=41.mbox";
-    FILE *fp = fopen(mail_path, "a+");
-    if (fp != NULL)
-    {
+int main(void) {
+    char *mail_path = "/home/ivachernov/smtp-client/utils/mail/ubuntu/new/1.1.localhost.com,S=41.mbox";
+    FILE *fp = fopen(mail_path, "w");
+    if (fp != NULL) {
         fputs("Chernov-Ivan.1997@yandex.ru\n", fp);
-        fputs("dev@localhost.com\n", fp);
+        fputs("mail@localhost.com\n", fp);
         fputs("From: Chernov-Ivan.1997@yandex.ru\n", fp);
         fputs("TO: dev@localhost.com\n", fp);
         fputs("Subject:test mail\n\n\n", fp);
@@ -389,8 +384,7 @@ int main(void)
     //     return CU_get_error();
     // }
 
-    if (NULL == msg_unit_suite)
-    {
+    if (NULL == msg_unit_suite) {
         CU_cleanup_registry();
         return CU_get_error();
     }
