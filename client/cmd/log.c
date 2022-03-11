@@ -1,6 +1,5 @@
 #include "../include/log.h"
 
-
 log_level cur_lvl;
 
 int save_log(char *message, char *logs_dir) {

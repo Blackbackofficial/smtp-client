@@ -27,7 +27,6 @@ struct mail_domain_dscrptr {
     int curr_rcpts_index;
 
     char request_buf[MAX_BUF_LEN];   // Буфер для отправляемых данных
-    //char response_buf[MAX_BUF_LEN];  // Буфер для ответа от сервера
 };
 
 struct mail_process_dscrptr {

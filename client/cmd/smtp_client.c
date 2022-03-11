@@ -77,7 +77,6 @@ int send_msg_to_server(struct mail_domain_dscrptr *cur_mail_domain) {
     return code;
 }
 
-// Отправляет сообщение HELO почтовому серверу
 int send_helo(int socket_fd, char *request_buf) {
     bzero(request_buf, MAX_BUF_LEN);
     gethostname(client_host_name, MAX_BUF_LEN);
@@ -88,7 +87,6 @@ int send_helo(int socket_fd, char *request_buf) {
     return send_data(request_buf, socket_fd);
 }
 
-// Отправляет сообщение MAIL FROM почтовому серверу
 int send_mail_from(int socket_fd, char *msg, char *request_buf) {
     char *token;
     const char line[3] = "\n";
@@ -101,7 +99,6 @@ int send_mail_from(int socket_fd, char *msg, char *request_buf) {
     return send_data(request_buf, socket_fd);
 }
 
-// Отправляет сообщение RCPT TO почтовому серверу
 int send_rcpt_to(int socket_fd, char *msg, char *request_buf) {
     char *token;
     const char line[3] = "\n";
@@ -142,7 +139,6 @@ int send_msg_body(int socket_fd, char *request_buf) {
     return send_data("\r\n.\r\n", socket_fd);
 }
 
-// Отправляет сообщение QUIT почтовому серверу
 int send_quit(int socket_fd, char *request_buf) {
     bzero(request_buf, MAX_BUF_LEN);
     strcpy(request_buf, "QUIT\n");
@@ -150,7 +146,6 @@ int send_quit(int socket_fd, char *request_buf) {
     return send_data(request_buf, socket_fd);
 }
 
-//Writes data to output socket
 int send_data(char *data, int socket_fd) {
     int n = 0;
     printf("SENDING DATA: %s \n", data);
