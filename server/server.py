@@ -5,19 +5,20 @@ import dns.resolver
 import re
 import _thread
 import shutil
-import time
 
 
-# start a new file for this session and change the state of the HELO
 def HELO(args, s, client_address, state):
     fileName = str(client_address[1]) + '.txt'
     if len(args) != 2:
         s.send(bytes("501 Syntax: HELO hostname \r\n", "utf-8"))
         return
+    arList = list()
     # check if helo has been sent before
     if state['HELO'] == False:
         with open(fileName, 'w') as the_file:
-            the_file.write(" ".join(args) + "\r\n")
+            for arg in args:
+                arList.append(arg.decode('UTF-8'))
+            the_file.write(" ".join(arList) + "\r\n")
         state['HELO'] = True
         state['file'] = client_address[1]
         state['domain'] = args[1]
@@ -26,7 +27,9 @@ def HELO(args, s, client_address, state):
     else:
         open(fileName, 'w').close()
         with open(fileName, 'a') as the_file:
-            the_file.write(" ".join(args) + "\r\n")
+            for arg in args:
+                arList.append(arg.decode('UTF-8'))
+            the_file.write(" ".join(arList) + "\r\n")
         state['HELO'] = False
         state['MAIL'] = False
         state['RCPT'] = False
@@ -50,18 +53,23 @@ def MAIL(args, s, client_address, state):
                 return
             checkSyntax = re.match("(^FROM:<[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", args[1], re.IGNORECASE)
             if (checkSyntax):
+                arList = list()
                 # check if this is the first mail transaction in this session
                 if state['data'] == False:
                     with open(fileName, 'a') as the_file:
-                        the_file.write(" ".join(args) + "\r\n")
+                        for arg in args:
+                            arList.append(arg.decode('UTF-8'))
+                        the_file.write(" ".join(arList) + "\r\n")
                     state['MAIL'] = True
                     s.send(bytes("250 2.1.0 Ok \r\n", "utf-8"))
                 else:
                     state['file'] = state['file'] + 1
                     fileName = str(state['file']) + '.txt'
                     with open(fileName, 'a') as the_file:
+                        for arg in args:
+                            arList.append(arg.decode('UTF-8'))
                         the_file.write("helo " + state['domain'] + "\r\n")
-                        the_file.write(" ".join(args) + "\n")
+                        the_file.write(" ".join(arList) + "\r\n")
                     state['MAIL'] = True
                     state['completedTransaction'] = False
                     s.send(bytes("250 2.1.0 Ok \r\n", "utf-8"))
@@ -83,7 +91,10 @@ def RCPT(args, s, client_address, state):
             state['recipient'] = checkSyntax.group()
             fileName = str(state['file']) + '.txt'
             with open(fileName, 'a') as the_file:
-                the_file.write(" ".join(args) + "\r\n")
+                arList = list()
+                for arg in args:
+                    arList.append(arg.decode('UTF-8'))
+                the_file.write(" ".join(arList) + "\r\n")
             state['RCPT'] = True
             s.send(bytes("250 2.1.5 Ok \r\n", "utf-8"))
         else:
@@ -157,8 +168,7 @@ def findMXServer(email):
     try:
         mailExchangeServers = dns.resolver.query(domain, 'MX')
     except:
-        print
-        "no domain found \n"
+        print("no domain found \n")
         return
     lowestPref = ""
     pref = mailExchangeServers[0].preference
@@ -195,8 +205,7 @@ def relayData(client_address, state):
                         shutil.copy(filename, folderPath)
         os.remove(filename)
     else:
-        print
-        "Host not found \n"
+        print("Host not found \n")
         # write the session to the errors folder
         filePath = os.path.realpath(filename)
         folderPath = os.path.join('errors', os.path.basename(filePath))
@@ -231,14 +240,14 @@ def recieveData(s, state):
 
 
 dispatch = {
-    'helo': HELO,
-    'mail': MAIL,
-    'rcpt': RCPT,
-    'data': DATA,
-    'quit': QUIT,
-    'vrfy': VRFY,
-    'rest': RSET,
-    'noop': NOOP
+    b'helo': HELO,
+    b'mail': MAIL,
+    b'rcpt': RCPT,
+    b'data': DATA,
+    b'quit': QUIT,
+    b'vrfy': VRFY,
+    b'rest': RSET,
+    b'noop': NOOP
 }
 
 
@@ -251,24 +260,19 @@ def process_network_command(command, args, s, client_address, state):
         s.send(bytes("502 5.5.2 Error: command not recognized \r\n", "utf-8"))
 
 
-# recieve a line
 def linesplit(s, state):
     try:
-        # add timeout to the connection if no commands are recieved
-        # s.setblocking(0)
         s.settimeout(300)
         buffer = s.recv(4096)
         print(buffer)
-        # remove timeout if commands are recieved
         s.settimeout(None)
         buffering = True
         while buffering:
             print(buffer)
-            # prevent empty lines from being processed
             if buffer == "\r\n":
-                s.send(bytes("500 5.5.2 Error: bad syntax \n", "utf-8"))
+                s.send(bytes("500 5.5.2 Error: Syntax error \n", "utf-8"))
             if bytes("\n", "utf-8") in buffer:
-                (line, buffer) = buffer.split("\n", 1)
+                (line, buffer) = buffer.split(bytes("\n", "utf-8"), 1)
                 return line
             else:
                 more = s.recv(4096)
@@ -295,35 +299,29 @@ def handleClient(s, client_address):
         'completedTransaction': False
     }
     try:
-        s.send(bytes("220 SMTP Nour 1.0 \r\n", "utf-8"))
+        s.send(bytes("220 SMTP Service ready 1.0 \r\n", "utf-8"))
         print(sys.stderr, 'connection from', client_address)
-        # Receive the data in small chunks
         while state['loop']:
             lines = linesplit(s, state)
-            args = lines.split()
-            # prevent empty lines from invoking the function
+            try:
+                args = lines.split()
+            except AttributeError:
+                print(args)
             if len(args) > 0:
                 process_network_command(args[0], args, s, client_address, state)
     finally:
-        # Clean up the connection
         s.close()
 
 
 def main():
     print(sys.argv)
-    # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # prevent address is already in use error
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    # Bind the socket to the port
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # prevent address is already in use error
     server_address = (sys.argv[1], 1024)
-    # print >> sys.stderr, 'starting up on %s port %s' % server_address
     sock.bind(server_address)
-    # Listen for incoming connections
     sock.listen(0)
 
     while True:
-        # Wait for a connection
         print('waiting for a connection')
         connection, client_address = sock.accept()
         if connection:
