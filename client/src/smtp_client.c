@@ -154,7 +154,7 @@ int send_quit(int socket_fd, char *request_buf) {
 //Writes data to output socket
 int send_data(char *data, int socket_fd) {
     int n = 0;
-    //printf("SENDING DATA %s \n", data);
+    printf("SENDING DATA: %s \n", data);
     n = write(socket_fd, data, strlen(data));
     if (n < 0) {
         log_e("%s", "Unable to send data to mail server \n");
@@ -194,6 +194,7 @@ char *read_data_from_server(int socket_fd) {
             break;
         }
 
+//        printf("%s", buf);
         bzero(buf, buf_size);
     }
 
@@ -206,8 +207,12 @@ char *read_data_from_server(int socket_fd) {
 
 te_client_fsm_event check_server_code(char *response) {
     log_i("SERVER RESPONSE %s", response);
+    printf("%s1", response);
     char server_returned_code[4] = "   ";
+//    printf("%s2", response);
     memcpy(server_returned_code, response, strlen(server_returned_code));
+//    printf("%s3", response);
+    printf("hi");
     int code = atoi(server_returned_code);
     if (code < 200 || (code > 300 && code != 354)) {
         char error_msg[1024];
@@ -221,6 +226,5 @@ te_client_fsm_event check_server_code(char *response) {
         else
             return CLIENT_FSM_EV_ERROR;
     }
-
     return CLIENT_FSM_EV_OK;
 }

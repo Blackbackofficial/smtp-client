@@ -31,7 +31,7 @@ int init_suite(void)
 
     struct sockaddr_in mail_server = get_domain_server_info("localhost");
     mail_server.sin_family = AF_INET;
-    mail_server.sin_port = htons(25);
+    mail_server.sin_port = htons(1024);
     mock_dscrptrs[0].socket_fd = connect_to_mail_server(0, mail_server, "localhost.com");
     mock_dscrptrs[0].domain_mail_server = mail_server;
     mock_dscrptrs[0].total_send_time = 120;
@@ -94,22 +94,29 @@ void FAKE_MX_SERVER_NAME_GOT_FAILED(void)
     CU_ASSERT_EQUAL(server_name, NULL);
 }
 
-void ONE_EMAIL_SENT_SUCCESS(void)
-{
+void ONE_EMAIL_SENT_SUCCESS(void) {
     char *server_response;
-    while ((server_response = read_data_from_server(mock_dscrptrs[0].socket_fd)) == NULL)
-    {
-        ;
+    for(;;) {
+        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
+        if (server_response == NULL) {
+            continue;
+        } else {
+            break;
+        }
     }
+    printf("%s", server_response);
 
     te_client_fsm_event event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
+    printf("OK\n");
 
     send_helo(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
     while ((server_response = read_data_from_server(mock_dscrptrs[0].socket_fd)) == NULL)
     {
         ;
     }
+    printf("%s", server_response);
+
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 

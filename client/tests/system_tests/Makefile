@@ -13,7 +13,7 @@ OBJECTS = $(patsubst %.o,$(OBJ_DIR)/%.o, $(SRC:.c=.o))
 
 all: system_test smtp_client
 	./smtp_client_system_test
-	/home/ivachernov/smtp-client/client/smtp_client client.cfg /home/ivachernov/smtp-client/client/tests/system_tests/logs/
+	/home/ivachernov/smtp-client/client
 
 system_test: $(OBJECTS)
 	$(CC) $(LDFLAGS) -o $(TARGET) $(OBJECTS) $(LIB)
