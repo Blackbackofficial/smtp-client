@@ -7,7 +7,7 @@ OBJ_DIR = build
 LIB = -lconfig -lresolv -lcunit
 TARGET = smtp_client_test
 
-CMD = smtp_client_test.c ../../../cmd/smtp_client.c ../../../cmd/msg.c ../../../cmd/mx_utils.c ../../../cmd/log.c ../../../../common/cmd/string_utils.c
+CMD = smtp_client_test.c ../../../cmd/smtp_client.c ../../../cmd/msg.c ../../../cmd/mx_utils.c ../../../cmd/log.c ../../../../utils/cmd/string_utils.c
 OBJECTS = $(patsubst %.o,$(OBJ_DIR)/%.o, $(CMD:.c=.o))
 
 all: tests

@@ -2,13 +2,13 @@ CC = gcc
 CFLAGS = -Wall -Werror -std=gnu99 -ggdb3
 LDFLAGS=-lresolv  -lrt
 
-INC = -I include -I ../common/include
+INC = -I include -I ../utils/include
 CMD_DIR = cmd
 OBJ_DIR = build
 LIB = -lconfig -lresolv
 TARGET = smtp_client
 
-CMD = client.c scheduler.c domain_proc.c mx_utils.c smtp_client.c msg.c log.c client-fsm.c ../../common/cmd/string_utils.c ../../common/cmd/dir_utils.c
+CMD = client.c scheduler.c domain_proc.c mx_utils.c smtp_client.c msg.c log.c client-fsm.c ../../utils/cmd/string_utils.c ../../utils/cmd/dir_utils.c
 OBJECTS = $(patsubst %.o,$(OBJ_DIR)/%.o, $(CMD:.c=.o))
 
 all: client

@@ -2,8 +2,8 @@
 #define _LOG_H_
 
 #include <time.h>
-#include "../../common/include/dir_utils.h"
-#include "../../common/include/string_utils.h"
+#include "../../utils/include/dir_utils.h"
+#include "../../utils/include/string_utils.h"
 #include "map.h"
 
 typedef enum log_level_type {

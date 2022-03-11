@@ -2,7 +2,7 @@
 #define _MSG_H_
 
 #include <libconfig.h>
-#include "../../common/include/dir_utils.h"
+#include "../../utils/include/dir_utils.h"
 
 typedef struct node_t {
     char *val;
