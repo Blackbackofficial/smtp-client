@@ -68,7 +68,7 @@ def MAIL(args, s, client_address, state):
                     with open(fileName, 'a') as the_file:
                         for arg in args:
                             arList.append(arg.decode('UTF-8'))
-                        the_file.write("helo " + state['domain'] + "\r\n")
+                        the_file.write("helo " + state['domain'].decode('UTF-8') + "\r\n")
                         the_file.write(" ".join(arList) + "\r\n")
                     state['MAIL'] = True
                     state['completedTransaction'] = False
@@ -110,7 +110,7 @@ def DATA(args, s, client_address, state):
         data = recieveData(s, state)
         with open(fileName, 'a') as the_file:
             the_file.write("data \n")
-            the_file.write(data)
+            the_file.write(data.decode('UTF-8'))
             the_file.write("quit \n")
         state['MAIL'] = False
         state['RCPT'] = False
@@ -228,7 +228,7 @@ def recieveData(s, state):
     # remove timeout if commands are recieved
     buffering = True
     while buffering:
-        if "\r\n.\r\n" in buffer:
+        if bytes("\r\n.\r\n", "utf-8") in buffer:
             return buffer
         else:
             more = s.recv(4096)

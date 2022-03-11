@@ -7,8 +7,8 @@ char *read_msg_file(char *email_path) {
 
     fp = fopen(email_path, "r");
     if (fp == NULL) {
-        printf("%s\n", strerror(errno));
-        exit(0);
+//        printf("%s\n", strerror(errno));
+//        exit(0);
         return NULL;
     }
 

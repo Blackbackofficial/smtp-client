@@ -74,7 +74,6 @@ int send_msg_to_server(struct mail_domain_dscrptr *cur_mail_domain) {
     default:
         break;
     }
-
     return code;
 }
 
@@ -175,7 +174,6 @@ char *read_data_from_server(int socket_fd) {
 
     bzero(buf, buf_size);
     bzero(msg, msg_size);
-    msg[0] = '\0';
 
     while ((nread = recv(socket_fd, buf, buf_size - 1, 0)) > 0) {
         if (nread > buf_size)
@@ -193,13 +191,13 @@ char *read_data_from_server(int socket_fd) {
         if (strstr(msg, "\r\n") != NULL) {
             break;
         }
-
 //        printf("%s", buf);
         bzero(buf, buf_size);
     }
 
     if (nread < 0) {
         log_e("%s", "Could not read data from server");
+        usleep(100);
         return NULL;
     }
     return msg;

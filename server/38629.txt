@@ -1,0 +1,11 @@
+helo ubuntu
+MAIL FROM: <Chernov-Ivan.1997@yandex.ru> MAIL FROM: <Chernov-Ivan.1997@yandex.ru>
+RCPT TO:<mail@localhost.com>
+data 
+From: Chernov-Ivan.1997@yandex.ru
+TO: dev@localhost.com
+Subject:test mail
+Test Mail of SMTP client
+
+.
+quit 

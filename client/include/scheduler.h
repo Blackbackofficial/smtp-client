@@ -2,6 +2,7 @@
 #define _SCHEDULER_H_
 
 #include "domain_proc.h"
+#include <sys/poll.h>
 
 #define MAX_MAIL_DOMAIN_NUM 50
 #define RETRY_DIR_READ_TIME 25
