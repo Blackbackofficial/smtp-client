@@ -360,6 +360,18 @@ void TWO_EMAILS_TWO_SESSIONS_SENT_SUCCESS(void)
 
 int main(void)
 {
+    char *mail_path = "/home/ivachernov/smtp-client/common/mail/ubuntu/new/1.1.localhost.com,S=41.mbox";
+    FILE *fp = fopen(mail_path, "a+");
+    if (fp != NULL)
+    {
+        fputs("Chernov-Ivan.1997@yandex.ru\n", fp);
+        fputs("dev@localhost.com\n", fp);
+        fputs("From: Chernov-Ivan.1997@yandex.ru\n", fp);
+        fputs("TO: dev@localhost.com\n", fp);
+        fputs("Subject:test mail\n\n\n", fp);
+        fputs("Test Mail of SMTP client\n", fp);
+    }
+    fclose(fp);
     CU_pSuite smtp_client_suite = NULL;
     CU_pSuite msg_unit_suite = NULL;
     CU_pSuite mx_utils_unit_suite = NULL;

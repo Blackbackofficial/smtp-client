@@ -1,4 +1,4 @@
-#include "string_utils.h"
+#include "../include/string_utils.h"
 
 char *str_replace(char *str, char *orig, char *rep)
 {
