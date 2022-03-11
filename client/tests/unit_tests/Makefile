@@ -4,7 +4,7 @@ LDFLAGS= -lresolv  -lrt -lcunit
 
 #INC = -I include
 SRC_DIR = src
-OBJ_DIR = obj
+OBJ_DIR = build
 LIB = -lconfig -lresolv -lcunit
 TARGET = smtp_client_test
 

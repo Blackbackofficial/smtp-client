@@ -4,7 +4,7 @@ LDFLAGS=-lresolv  -lrt
 
 INC = -I include -I ../common/include
 SRC_DIR = src
-OBJ_DIR = obj
+OBJ_DIR = build
 LIB = -lconfig -lresolv
 TARGET = smtp_client
 
