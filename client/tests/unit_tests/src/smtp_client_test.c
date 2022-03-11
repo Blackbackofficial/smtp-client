@@ -1,19 +1,7 @@
 #include "../../../include/smtp_client.h"
-#include "../../../include/msg.h"
-#include "../../../include/map.h"
 #include "../../../include/mx_utils.h"
-#include "../../../include/log.h"
-
 #include "CUnit/CUnit.h"
 #include "CUnit/Basic.h"
-#include <sys/select.h>
-#include <stdio.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <time.h>
-#include <resolv.h>
 
 fd_set read_fds;
 fd_set write_fds;

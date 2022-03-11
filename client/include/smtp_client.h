@@ -2,7 +2,7 @@
 #define _SMTP_CLIENT_H_
 
 #include <sys/time.h>
-#include "../../common/include/dir_utils.h"
+#include "../include/dir_utils.h"
 #include "../include/log.h"
 #include "../include/msg.h"
 
