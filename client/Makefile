@@ -8,7 +8,7 @@ OBJ_DIR = build
 LIB = -lconfig -lresolv
 TARGET = smtp_client
 
-CMD = client.c scheduler.c domain_proc.c mx_utils.c smtp_client.c msg.c log.c client-fsm.c ../../common/src/string_utils.c ../../common/src/dir_utils.c
+CMD = client.c scheduler.c domain_proc.c mx_utils.c smtp_client.c msg.c log.c client-fsm.c ../../common/cmd/string_utils.c ../../common/cmd/dir_utils.c
 OBJECTS = $(patsubst %.o,$(OBJ_DIR)/%.o, $(CMD:.c=.o))
 
 all: client
