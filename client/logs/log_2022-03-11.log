@@ -1,0 +1,23 @@
+20:02:41 INFO Worker for child proc `3688' successfully started.
+20:02:41 ERROR Worker for child proc `3686' successfully started.
+20:02:41 INFO Worker for child proc `3685' successfully started.
+20:03:16 ERROR Unable to start client: incorrect config file
+20:04:15 INFO Registering new email /home/ivachernov/smtp-client/utils/mail/ubuntu/new/1.1.localhost.com,S=41.mbox
+20:04:31 ERROR Connection to localhost.com Failed 
+20:04:56 INFO Process 0 already handles localhost.com domain. Domains count 1
+20:04:56 INFO Directory /home/ivachernov/smtp-client/utils/mail/ubuntu/new/ is not empty
+20:05:01 INFO Email domain localhost.com is already registered
+20:05:46 INFO Directory /home/ivachernov/smtp-client/utils/mail/ubuntu/new/ is not empty
+20:05:46 INFO Registering new email /home/ivachernov/smtp-client/utils/mail/ubuntu/new/1.1.localhost.com,S=41.mbox
+20:07:01 INFO Email domain localhost.com is already registered
+20:07:31 INFO Email domain localhost.com is already registered
+20:08:41 INFO Process 0 already handles localhost.com domain. Domains count 1
+20:08:46 INFO Email domain localhost.com is already registered
+20:09:31 INFO Process 0 already handles localhost.com domain. Domains count 1
+20:10:02 INFO Email domain localhost.com is already registered
+20:10:21 INFO Directory /home/ivachernov/smtp-client/utils/mail/ubuntu/new/ is not empty
+20:10:32 INFO Registering new email /home/ivachernov/smtp-client/utils/mail/ubuntu/new/1.1.localhost.com,S=41.mbox
+20:10:49 ERROR Unable to start client: incorrect config file
+20:10:49 INFO Worker for child proc `5428' successfully started.
+20:12:29 INFO Directory /home/ivachernov/smtp-client/utils/mail/ubuntu/new/ is not empty
+20:12:54 INFO Process 0 already handles localhost.com domain. Domains count 1

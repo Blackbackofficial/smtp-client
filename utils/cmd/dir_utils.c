@@ -36,8 +36,7 @@ char *get_user_new_dir_full_path(const char *mail_dir, char *user_dir_name)
     return user_dir_new;
 }
 
-char *get_domain_name_from_email_full_path(char *email_path)
-{
+char *get_domain_name_from_email_full_path(char *email_path) {
     char **tokens = str_split(email_path, '.');
     char *first_part = tokens[2];
     char *second_part = tokens[3];
