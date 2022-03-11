@@ -14,7 +14,7 @@ def HELO(args, s, client_address, state):
         return
     arList = list()
     # check if helo has been sent before
-    if state['HELO'] == False:
+    if not state['HELO']:
         with open(fileName, 'w') as the_file:
             for arg in args:
                 arList.append(arg.decode('UTF-8'))
@@ -42,20 +42,20 @@ def HELO(args, s, client_address, state):
 def MAIL(args, s, client_address, state):
     fileName = str(state['file']) + '.txt'
     # first check that helo has been sent
-    if state['HELO'] == False:
+    if not state['HELO']:
         s.send(bytes("503 5.5.1 Error: send HELO/EHLO first \r\n", "utf-8"))
     else:
         # make sure it's not a nested mail command
-        if state['MAIL'] == False:
+        if not state['MAIL']:
             # check if the arguments are provided
             if len(args) != 2:
                 s.send(bytes("501 5.5.4 Syntax: MAIL FROM:<address> \r\n", "utf-8"))
                 return
             checkSyntax = re.match("(^FROM:<[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", args[1], re.IGNORECASE)
-            if (checkSyntax):
+            if checkSyntax:
                 arList = list()
                 # check if this is the first mail transaction in this session
-                if state['data'] == False:
+                if not state['data']:
                     with open(fileName, 'a') as the_file:
                         for arg in args:
                             arList.append(arg.decode('UTF-8'))
@@ -87,7 +87,7 @@ def RCPT(args, s, client_address, state):
             return
         # check the format of the email is valid
         checkSyntax = re.match("(^TO:<[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+>$)", args[1], re.IGNORECASE)
-        if (checkSyntax):
+        if checkSyntax:
             state['recipient'] = checkSyntax.group()
             fileName = str(state['file']) + '.txt'
             with open(fileName, 'a') as the_file:
@@ -132,7 +132,7 @@ def QUIT(args, s, client_address, state):
     state['loop'] = False
     s.send(bytes("221 2.0.0 Bye \r\n", "utf-8"))
     s.close()
-    if state['completedTransaction'] == False:
+    if not state['completedTransaction']:
         fileName = str(state['file']) + '.txt'
         os.remove(fileName)
 
@@ -143,7 +143,7 @@ def VRFY(args, s, client_address, state):
         s.send(bytes("501 5.5.4 Syntax: VRFY address \n", "utf-8"))
         return
     checkSyntax = re.match("TO:<\w+@\w+\.\w+>", args[1], re.IGNORECASE)
-    if (checkSyntax):
+    if checkSyntax:
         s.send(bytes("252  Cannot VRFY user \n", "utf-8"))
     else:
         s.send(bytes("450 4.1.2 Recipient address rejected: Domain not found \n", "utf-8"))
@@ -216,7 +216,7 @@ def relayData(client_address, state):
 def closeAndClean(s, state):
     state['loop'] = False
     s.close()
-    if state['completedTransaction'] == False:
+    if not state['completedTransaction']:
         fileName = str(state['file']) + '.txt'
         os.remove(fileName)
 
