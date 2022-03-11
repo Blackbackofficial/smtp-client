@@ -1,21 +1,9 @@
 #ifndef _SMTP_CLIENT_H_
 #define _SMTP_CLIENT_H_
 
-#include <dirent.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <resolv.h>
-#include <assert.h>
-#include <time.h>
 #include <sys/time.h>
-
 #include "../../common/include/dir_utils.h"
-#include "../../common/include/string_utils.h"
-#include "../include/map.h"
 #include "../include/log.h"
-#include "../include/client_types.h"
 #include "../include/msg.h"
 
 #define MAX_BUF_LEN 1024

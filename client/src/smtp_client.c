@@ -207,11 +207,8 @@ char *read_data_from_server(int socket_fd) {
 
 te_client_fsm_event check_server_code(char *response) {
     log_i("SERVER RESPONSE %s", response);
-    printf("%s1", response);
     char server_returned_code[4] = "   ";
-//    printf("%s2", response);
     memcpy(server_returned_code, response, strlen(server_returned_code));
-//    printf("%s3", response);
     printf("hi");
     int code = atoi(server_returned_code);
     if (code < 200 || (code > 300 && code != 354)) {

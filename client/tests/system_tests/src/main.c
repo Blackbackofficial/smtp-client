@@ -3,7 +3,6 @@
 #include "../../../include/map.h"
 #include "../../../include/mx_utils.h"
 #include "../../../include/log.h"
-#include "../../../include/list.h"
 
 #include "CUnit/CUnit.h"
 #include "CUnit/Basic.h"

@@ -2,9 +2,7 @@
 #define _MAP_H_
 
 #include <resolv.h>
-#include <sys/ipc.h>
 #include <sys/msg.h>
-#include "list.h"
 #include "client-fsm.h"
 
 #define MAX_BUF_LEN 1024

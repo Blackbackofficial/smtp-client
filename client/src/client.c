@@ -1,12 +1,5 @@
 #include "../include/client_types.h"
 #include "../include/scheduler.h"
-#include <assert.h>
-#include <grp.h>
-#include <pwd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <limits.h>
 
 #define CLIENT_USAGE "Usage: <client> <config_file>"
 #define PROC_CNT_DEFAULT 6

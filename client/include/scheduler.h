@@ -1,21 +1,7 @@
 #ifndef _SCHEDULER_H_
 #define _SCHEDULER_H_
 
-#include "../../common/include/dir_utils.h"
-#include "../../common/include/string_utils.h"
-#include "mx_utils.h"
-#include "smtp_client.h"
 #include "domain_proc.h"
-#include "client_types.h"
-#include "msg.h"
-#include "map.h"
-#include "client-fsm.h"
-#include <sys/select.h>
-#include <sys/wait.h>
-#include <sys/ipc.h> 
-#include <sys/msg.h> 
-#include <time.h>
-#include <sys/time.h>
 
 #define MAX_MAIL_DOMAIN_NUM 50
 #define RETRY_DIR_READ_TIME 25

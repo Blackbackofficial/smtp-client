@@ -3,7 +3,6 @@
 #include "../../../include/map.h"
 #include "../../../include/mx_utils.h"
 #include "../../../include/log.h"
-#include "../../../include/list.h"
 
 #include "CUnit/CUnit.h"
 #include "CUnit/Basic.h"
@@ -108,12 +107,15 @@ void ONE_EMAIL_SENT_SUCCESS(void) {
 
     te_client_fsm_event event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
-    printf("OK\n");
 
     send_helo(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    while ((server_response = read_data_from_server(mock_dscrptrs[0].socket_fd)) == NULL)
-    {
-        ;
+    for(;;) {
+        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
+        if (server_response == NULL) {
+            continue;
+        } else {
+            break;
+        }
     }
     printf("%s", server_response);
 
@@ -122,25 +124,37 @@ void ONE_EMAIL_SENT_SUCCESS(void) {
 
     mock_dscrptrs[0].buffer = read_msg_file(mock_dscrptrs[0].mails_list->val);
     send_mail_from(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
-    while ((server_response = read_data_from_server(mock_dscrptrs[0].socket_fd)) == NULL)
-    {
-        ;
+    for(;;) {
+        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
+        if (server_response == NULL) {
+            continue;
+        } else {
+            break;
+        }
     }
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
     send_rcpt_to(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
-    while ((server_response = read_data_from_server(mock_dscrptrs[0].socket_fd)) == NULL)
-    {
-        ;
+    for(;;) {
+        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
+        if (server_response == NULL) {
+            continue;
+        } else {
+            break;
+        }
     }
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
     send_data_msg(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    while ((server_response = read_data_from_server(mock_dscrptrs[0].socket_fd)) == NULL)
-    {
-        ;
+    for(;;) {
+        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
+        if (server_response == NULL) {
+            continue;
+        } else {
+            break;
+        }
     }
     event = check_server_code(server_response);
     CU_ASSERT(event == CLIENT_FSM_EV_OK);

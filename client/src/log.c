@@ -1,11 +1,5 @@
 #include "../include/log.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <unistd.h>
-#include <time.h>
+
 
 log_level cur_lvl;
 
