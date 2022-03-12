@@ -67,7 +67,6 @@ int get_domains_mails(struct domain_mails *domains_mails, int domains_count) {
                         free(email_full_name);
                         free(tmp_cur_mail_domain);
                         free(tokens[0]);
-                        free(tokens[1]);
                         free(tokens);
                     }
                 }
@@ -94,8 +93,6 @@ int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domain
     char **tokens = str_split(tmp_cur_mail_domain, ',');
     free(tmp_cur_mail_domain);
     char *cur_email_domain = tokens[0];
-    //free(tokens[0]);
-    //free(tokens[1]);
     free(tokens);
 
     //Проверяем, является ли домен письма новым

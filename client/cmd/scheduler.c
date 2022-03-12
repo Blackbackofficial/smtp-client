@@ -23,7 +23,6 @@ int run_client(int proc_num, int total_send_time, int retry_time) {
     return 1;
 }
 
-// Содержит бизнес логику, обрабатываемую главным процессом
 int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_procs) {
     log_i("%s", "Worker for master proc successfully started");
     for (int i = 0; i < proc_num; i++) {
@@ -82,7 +81,6 @@ int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_
     return min_proc_idx;
 }
 
-// Содержит бизнес логику, обрабатываемую дочерним процессом
 int child_process_worker_start(int proc_idx, int total_send_time, int retry_time) {
     printf("Fork-Test\n");
     log_i("Worker for child proc `%d' successfully started.", getpid());
