@@ -234,102 +234,7 @@ void TWO_EMAILS_ONE_SESSION_SENT_SUCCESS(void) {
     CU_ASSERT(event == CLIENT_FSM_EV_OK);
 }
 
-void TWO_EMAILS_TWO_SESSIONS_SENT_SUCCESS(void) {
-    init_suite();
-    char *server_response;
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    te_client_fsm_event event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
 
-    /* First EMAIL */
-    send_helo(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    mock_dscrptrs[0].buffer = read_msg_file(mock_dscrptrs[0].mails_list->val);
-    send_mail_from(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_rcpt_to(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_data_msg(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_msg_body(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-    close(mock_dscrptrs[0].socket_fd);
-    mock_dscrptrs[0].socket_fd = connect_to_mail_server(0, mock_dscrptrs[0].domain_mail_server, "localhost.com");
-
-    /* Second EMAIL */
-    mock_dscrptrs[0].buffer = read_msg_file(mock_dscrptrs[0].mails_list->val);
-    send_mail_from(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_rcpt_to(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].buffer, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_data_msg(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_msg_body(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-
-    send_quit(mock_dscrptrs[0].socket_fd, mock_dscrptrs[0].request_buf);
-    for(;;) {
-        server_response = read_data_from_server(mock_dscrptrs[0].socket_fd);
-        if (server_response == NULL) { continue; } else { break; }
-    }
-    event = check_server_code(server_response);
-    CU_ASSERT(event == CLIENT_FSM_EV_OK);
-}
 
 int main(void) {
     char *mail_path = "/home/ivachernov/smtp-client/utils/mail/ubuntu/new/1.1.localhost.com,S=41.mbox";
@@ -362,7 +267,6 @@ int main(void) {
 
     if ((NULL == CU_add_test(smtp_client_suite, "ONE_EMAIL_SENT_SUCCESS", ONE_EMAIL_SENT_SUCCESS)) ||
         (NULL == CU_add_test(smtp_client_suite, "TWO_EMAILS_ONE_SESSION_SENT_SUCCESS", TWO_EMAILS_ONE_SESSION_SENT_SUCCESS)) ||
-        /* (NULL == CU_add_test(smtp_client_suite, "TWO_EMAILS_TWO_SESSIONS_SENT_SUCCESS", TWO_EMAILS_TWO_SESSIONS_SENT_SUCCESS)) ||*/
         (NULL == CU_add_test(msg_unit_suite, "EMAIL_FILE_READ_SUCCESS", EMAIL_FILE_READ_SUCCESS)) ||
         (NULL == CU_add_test(msg_unit_suite, "EMAIL_FILE_READ_FAILED", EMAIL_FILE_READ_FAILED)) ||
         (NULL == CU_add_test(mx_utils_unit_suite, "DOMAIN_SERVER_INFO_GOT_SUCCESS", DOMAIN_SERVER_INFO_GOT_SUCCESS)) ||

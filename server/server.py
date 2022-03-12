@@ -264,7 +264,6 @@ def linesplit(s, state):
     try:
         s.settimeout(300)
         buffer = s.recv(4096)
-        print(buffer)
         s.settimeout(None)
         buffering = True
         while buffering:
