@@ -7,7 +7,7 @@ char *read_msg_file(char *email_path) {
 
     fp = fopen(email_path, "r");
     if (fp == NULL) {
-//        printf("%s\n", strerror(errno));
+        printf("%s\n", strerror(errno));
 //        exit(0);
         return NULL;
     }
@@ -23,9 +23,7 @@ char *read_msg_file(char *email_path) {
     }
 
     /* copy the file into the buffer */
-    if (1 != fread(buffer, file_size, 1, fp)) {
-        fclose(fp), free(buffer), fputs("entire read fails", stderr), exit(1);
-    }
+    fread(buffer, file_size, 1, fp)
 
     fclose(fp);
     return buffer;
@@ -49,7 +47,6 @@ int remove_first(node_t ** head) {
     free((*head)->val);
     free(*head);
     *head = next_node;
-
     return 1;
 }
 

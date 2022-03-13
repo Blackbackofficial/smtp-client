@@ -199,7 +199,6 @@ void handle_read_socket(struct mail_domain_dscrptr *cur_mail_domain, fd_set *rea
     char *server_response = read_data_from_server(cur_mail_domain->socket_fd);
     if (server_response == NULL) {
         log_e("%s", "Get NULL data from server");
-        //close_socket(sockets[i].fd);
     }
 
     log_i("Socket %d of %s domain is in %d READ_FDS", cur_mail_domain->socket_fd, cur_mail_domain->domain, cur_mail_domain->state);

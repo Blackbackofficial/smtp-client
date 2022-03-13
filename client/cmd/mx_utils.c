@@ -33,7 +33,6 @@ char *get_domain_mx_server_name(char *domain_name) {
     // MX RECORD
     r = res_query(domain_name, ns_c_any, ns_t_mx, nsbuf, sizeof(nsbuf));
     if (r < 0) {
-        //perror(domain_name);
         return NULL;
     } else {
         ns_initparse(nsbuf, r, &msg);

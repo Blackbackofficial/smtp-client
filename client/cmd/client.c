@@ -113,7 +113,7 @@ static int read_config(char *argv[]) {
     return 0;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) { // argv[1] is conf file, argv[2] is path to log filename
     if (fork() == 0) {
         start_logger(argv[2]);
     } else {

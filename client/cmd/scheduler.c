@@ -46,7 +46,6 @@ int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_
             }
 
             domains_mails[i].mails_count = 0;
-            //free(domains_mails[i].mails_paths);
             memset(&domains_mails[i].mails_paths[0], 0, sizeof(domains_mails[i].mails_paths));
         }
 

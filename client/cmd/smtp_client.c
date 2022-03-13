@@ -15,15 +15,6 @@ int connect_to_mail_server(int socket_fd, struct sockaddr_in mail_server, char *
     return socket_fd;
 }
 
-int close_all_conns(int max_fd) {
-    for (int i = 0; i <= max_fd; i++) {
-        //if (FD_ISSET(i, read_fds) || FD_ISSET(i, write_fds))
-        close(i);
-    }
-
-    return 0;
-}
-
 int send_msg_to_server(struct mail_domain_dscrptr *cur_mail_domain) {
     struct timeval curr_time;
     if (cur_mail_domain->last_attempt_time != 0) {
@@ -60,7 +51,6 @@ int send_msg_to_server(struct mail_domain_dscrptr *cur_mail_domain) {
         break;
     case CLIENT_FSM_ST_SEND_RCPT_TO:
         code = send_rcpt_to(cur_mail_domain->socket_fd, cur_mail_domain->buffer, cur_mail_domain->request_buf);
-        //cur_mail_domain->curr_rcpts_index++;
         break;
     case CLIENT_FSM_ST_SEND_DATA:
         code = send_data_msg(cur_mail_domain->socket_fd, cur_mail_domain->request_buf);
@@ -162,7 +152,7 @@ char *read_data_from_server(int socket_fd) {
     char buf[MAX_BUF_LEN];
     char *msg = (char *)malloc(MAX_BUF_LEN);
 
-    ssize_t nread = 0;
+    ssize_t nread;
     ssize_t read_bytes = 0;
     ssize_t msg_size = MAX_BUF_LEN;
     ssize_t buf_size = MAX_BUF_LEN;
@@ -186,7 +176,6 @@ char *read_data_from_server(int socket_fd) {
         if (strstr(msg, "\r\n") != NULL) {
             break;
         }
-//        printf("%s", buf);
         bzero(buf, buf_size);
     }
 
