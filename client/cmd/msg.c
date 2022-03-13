@@ -23,7 +23,7 @@ char *read_msg_file(char *email_path) {
     }
 
     /* copy the file into the buffer */
-    fread(buffer, file_size, 1, fp)
+    fread(buffer, file_size, 1, fp);
 
     fclose(fp);
     return buffer;

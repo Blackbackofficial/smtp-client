@@ -136,9 +136,7 @@ int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domain
         FD_CLR(mail_domains_dscrptrs[cur_domain_idx].socket_fd, read_fds);
         FD_CLR(mail_domains_dscrptrs[cur_domain_idx].socket_fd, except_fds);
         mail_domains_dscrptrs[cur_domain_idx].socket_fd = -1;
-        mail_domains_dscrptrs[cur_domain_idx].number_of_attempts = 0;
         mail_domains_dscrptrs[cur_domain_idx].last_attempt_time = 0;
-        mail_domains_dscrptrs[cur_domain_idx].curr_rcpts_index = -1;
     } else {
         add_first(&mail_domains_dscrptrs[cur_domain_idx].mails_list, saved_email_path);
         log_i("Mail %s for %s domain successfully added to process queue", saved_email_path, cur_email_domain);
@@ -158,9 +156,7 @@ void init_mail_domain_conn_settings(struct mail_domain_dscrptr *mail_domains_dsc
     if (cur_domain_socket_fd > -1) {
         log_i("Successfully connected to %s , socket fd %d", cur_email_domain, cur_domain_socket_fd);
         mail_domains_dscrptrs[cur_domain_idx].socket_fd = cur_domain_socket_fd;
-        mail_domains_dscrptrs[cur_domain_idx].number_of_attempts = 0;
         mail_domains_dscrptrs[cur_domain_idx].last_attempt_time = 0;
-        mail_domains_dscrptrs[cur_domain_idx].curr_rcpts_index = -1;
         FD_SET(cur_domain_socket_fd, read_fds);
         FD_SET(cur_domain_socket_fd, except_fds);
     } else {

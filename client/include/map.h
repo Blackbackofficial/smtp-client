@@ -21,10 +21,8 @@ struct mail_domain_dscrptr {
     int retry_time;
     int total_send_time;
 
-    int number_of_attempts;
     int last_attempt_time;
     int can_be_send;
-    int curr_rcpts_index;
 
     char request_buf[MAX_BUF_LEN];   // Буфер для отправляемых данных
 };
