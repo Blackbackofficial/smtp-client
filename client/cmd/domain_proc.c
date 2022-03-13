@@ -2,8 +2,8 @@
 
 extern int maxfd;
 
-// Обновляет массив с описаниями зарегистрированных почтовых доменов
-// Каждый элемент содержит название домена, число новых писем для него и пути к письмам
+// Updates array with descriptions of registered mail domains
+// Each element contains the name of the domain, the number of new messages for it and the path to the letters
 int get_domains_mails(struct domain_mails *domains_mails, int domains_count) {
     struct dirent *user_dir;
     DIR *mail_dir = opendir(conf.mail_dir);
@@ -31,14 +31,14 @@ int get_domains_mails(struct domain_mails *domains_mails, int domains_count) {
 
                         char *tmp_cur_mail_domain = get_domain_name_from_email_full_path(new_entry->d_name);
                         char **tokens = str_split(tmp_cur_mail_domain, ',');
-                        //Проверяем, есть ли текущий домен массиве доменов
+                        // Check if the current domain exists in the array of domains
                         int found_domain_num = -1;
                         for (int i = 0; i < domains_count; i++) {
                             if (strcmp(tokens[0], domains_mails[i].domain) == 0)
                                 found_domain_num = i;
                         }
 
-                        //Домен не найден - добавляем в массив
+                        // Domain not found - add to array
                         if (found_domain_num < 0) {
                             domains_mails[domains_count].domain = malloc(strlen(tokens[0]));
                             strcpy(domains_mails[domains_count].domain, tokens[0]);
@@ -49,7 +49,7 @@ int get_domains_mails(struct domain_mails *domains_mails, int domains_count) {
 
                             domains_mails[domains_count].mails_count++;
                             domains_count++;
-                        } else { //Домен найден - обновляем его состояние. Проверяем, есть ли текущее письмо в очереди обработки
+                        } else { // Domain found - update its state. Checking if the current message is in the processing queue
                             int found_mail_num = -1;
                             for (int k = 0; k < domains_mails[found_domain_num].mails_count; k++) {
                                 if (strcmp(email_full_name, domains_mails[found_domain_num].mails_paths[k]) == 0)
@@ -82,7 +82,7 @@ int get_domains_mails(struct domain_mails *domains_mails, int domains_count) {
     return domains_count;
 }
 
-// Регистрирует новое письмо в массиве дескрипторов mail_domains_dscrptrs для последующей обработки
+// Registers a new mail in the mail_domains_dscrptrs descriptor array for further processing
 int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domains_dscrptrs,
                        fd_set *read_fds, fd_set *write_fds, fd_set *except_fds, int total_send_time, int retry_time, int ready_domains_count) {
     log_i("Registering new email %s", email_path);
@@ -95,7 +95,7 @@ int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domain
     char *cur_email_domain = tokens[0];
     free(tokens);
 
-    //Проверяем, является ли домен письма новым
+    // Check if the email domain is new
     int found_domain_num = -1;
     for (int i = 0; i < ready_domains_count; i++) {
         if (strcmp(cur_email_domain, mail_domains_dscrptrs[i].domain) == 0)
@@ -103,7 +103,7 @@ int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domain
     }
 
     int cur_domain_idx = 0;
-    if (found_domain_num < 0) { //Домен не найден - добавляем в массив и биндим новый сокет
+    if (found_domain_num < 0) { // Domain not found - add a new socket to the array and bind
         cur_domain_idx = ready_domains_count;
         log_i("Email domain %s is not registered \n", cur_email_domain);
         mail_domains_dscrptrs[cur_domain_idx].domain = malloc(strlen(cur_email_domain));
@@ -124,7 +124,7 @@ int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domain
         mail_domains_dscrptrs[cur_domain_idx].mails_list = malloc(sizeof(node_t));
         mail_domains_dscrptrs[cur_domain_idx].mails_list->next = NULL;
         ready_domains_count++;
-    } else { // Домен уже зарегистрирован
+    } else { // Domain already registered
         cur_domain_idx = found_domain_num;
         log_i("Email domain %s is already registered", cur_email_domain);
         if (count(mail_domains_dscrptrs[cur_domain_idx].mails_list) == 0 || mail_domains_dscrptrs[cur_domain_idx].state == CLIENT_FSM_ST_INIT) {
@@ -148,7 +148,7 @@ int register_new_email(char *email_path, struct mail_domain_dscrptr *mail_domain
     return ready_domains_count;
 }
 
-// Инициализирует сетевые настройки домена - сокет, число подключений и проч
+// Initializes network settings for the domain - socket, number of connections, etc.
 void init_mail_domain_conn_settings(struct mail_domain_dscrptr *mail_domains_dscrptrs, int cur_domain_idx,
                                     char *cur_email_domain, fd_set *read_fds, fd_set *except_fds) {
     mail_domains_dscrptrs[cur_domain_idx].state = client_fsm_step(mail_domains_dscrptrs[cur_domain_idx].state, CLIENT_FSM_EV_OK, NULL);
@@ -165,7 +165,7 @@ void init_mail_domain_conn_settings(struct mail_domain_dscrptr *mail_domains_dsc
     }
 }
 
-// Обрабатывает почтовый домен в случае, когда его сокет находится в write_fds
+// Processes the mail domain when its socket is in write_fds
 void handle_write_socket(struct mail_domain_dscrptr *cur_mail_domain, fd_set *read_fds, fd_set *write_fds) {
     int code = send_msg_to_server(cur_mail_domain);
     if (code == -1) {
@@ -190,7 +190,7 @@ void handle_write_socket(struct mail_domain_dscrptr *cur_mail_domain, fd_set *re
     }
 }
 
-// Обрабатывает почтовый домен в случае, когда его сокет находится в read_fds
+// Handles the mail domain when its socket is in read_fds
 void handle_read_socket(struct mail_domain_dscrptr *cur_mail_domain, fd_set *read_fds, fd_set *write_fds) {
     char *server_response = read_data_from_server(cur_mail_domain->socket_fd);
     if (server_response == NULL) {
