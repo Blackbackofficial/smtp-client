@@ -47,6 +47,5 @@ char *get_domain_name_from_email_full_path(char *email_path) {
     free(second_part);
     free(tokens[4]);
     free(tokens);
-
     return mail_domain;
 }
