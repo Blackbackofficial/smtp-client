@@ -1,15 +1,15 @@
 # SMTP client
 
-#### Developed an SMTP client using the select call and workflows. Logging in a separate process. All messages are sent for one MX per session. Implemented unit tests as well as a test server
+Developed an SMTP client using the select call and workflows. Logging in a separate process. All messages are sent for one MX per session. Implemented unit tests as well as a test server
 
-##### Server*
+### Server*
 ```
   cd server/
   python3 server.py
 ```
 Runs on `localhost:1024`
 
-##### Client**
+### Client**
 
 ```
   cd client/
@@ -17,7 +17,7 @@ Runs on `localhost:1024`
   ./smtp_client ./client.cfg /home/ivachernov/smtp-client/client/logs/
 ```
 
-##### Unit-tests
+### Unit-tests
 ```
   cd client/tests/unit_tests
   make
