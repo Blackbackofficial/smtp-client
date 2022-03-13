@@ -16,4 +16,4 @@ struct client_conf {
 
 extern struct client_conf conf;
 
-#endif // _CLIENT_TYPES_H_
+#endif

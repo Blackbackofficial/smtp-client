@@ -101,7 +101,7 @@ int send_rcpt_to(int socket_fd, char *msg, char *request_buf) {
     return send_data(request_buf, socket_fd);
 }
 
-// Отправляет сообщение DATA почтовому серверу
+// Sends a DATA message to the mail server
 int send_data_msg(int socket_fd, char *request_buf) {
     bzero(request_buf, MAX_BUF_LEN);
     strcpy(request_buf, "DATA\n");
@@ -109,7 +109,7 @@ int send_data_msg(int socket_fd, char *request_buf) {
     return send_data(request_buf, socket_fd);
 }
 
-// Отправляет subject и тело сообщения почтовому серверу
+// Sends the subject and body of the message to the mail server
 int send_msg_body(int socket_fd, char *request_buf) {
     char *token;
     const char line[3] = "\n";

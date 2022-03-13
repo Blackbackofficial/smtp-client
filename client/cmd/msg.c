@@ -18,9 +18,6 @@ char *read_msg_file(char *email_path) {
 
     /* allocate memory for entire content */
     buffer = calloc(1, file_size + 1);
-    if (!buffer) {
-        fclose(fp), fputs("memory alloc fails", stderr), exit(1);
-    }
 
     /* copy the file into the buffer */
     fread(buffer, file_size, 1, fp);

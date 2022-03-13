@@ -54,11 +54,11 @@ int master_process_worker_start(int proc_num, struct mail_process_dscrptr *mail_
     return 1;
 }
 
-// Возвращает индекс процесса, в который стоит отправить новое письмо на обработку
+// Returns the index of the process to which a new message should be sent for processing
 int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_dscrptr *mail_procs, int proc_num) {
     for (int j = 0; j < proc_num; j++) {
         for (int i = 0; i < mail_procs[j].domains_count; i++) {
-            // Если один из процессов уже занимается обработкой конкр.домена, скидываем письмо в него
+            // If one of the processes is already processing a specific domain, we drop the letter into it
             if (strcmp(domain_name, mail_procs[j].domains[i]) == 0) {
                 log_i("Process %d already handles %s domain. Domains count %d", j, domain_name, mail_procs[j].domains_count);
                 return j;
@@ -66,7 +66,7 @@ int get_mail_proc_idx(char *domain_name, int domains_count, struct mail_process_
         }
     }
 
-    // Домен не найден ни в одном из процессов. Скидываем в процесс с меньшим числом доменов
+    // The domain was not found in any of the processes. Dropping into a process with fewer domains
     int min_proc_idx = 0;
     for (int j = 1; j < proc_num; j++) {
         if (mail_procs[min_proc_idx].domains_count > mail_procs[j].domains_count)
@@ -147,7 +147,6 @@ int child_process_worker_start(int proc_idx, int total_send_time, int retry_time
     }
 }
 
-// Ожидает заданное число секунд
 void wait_for(unsigned int secs) {
     unsigned int retTime = time(0) + secs;
     while (time(0) < retTime); // Loop until it arrives.
