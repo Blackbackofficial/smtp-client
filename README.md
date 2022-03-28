@@ -26,3 +26,4 @@ Runs on `localhost:1024`
 
 1. *Expand virtualenv for debug
 2. **You need to install the CUnit library, libconf, autogen, maybe something else. Don't forget to change client.conf and paths for ftok
+3. 
